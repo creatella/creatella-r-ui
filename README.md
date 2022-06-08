@@ -19,3 +19,17 @@ if you are using node >= 17, run `yarn start:legacy` instead
 - run `yarn`, it will fetch the module and is ready to be used as any dependecny
 
 git remote remove origin
+
+## Components
+
+1. Input type contains : 
+
+- phone-input
+- if you're not adding type on the components, it would be returned as default Input
+
+2. Select Box type contains :
+
+- single-select
+- country-select
+- multi-select
+- if you're not adding type on the components, it would be returned as default Select Box
