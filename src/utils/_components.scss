@@ -1,0 +1,85 @@
+/* ---------- Select Box Styles ----------- */
+.overlay::before {
+    content: '';
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 2;
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+
+    & .options-wrapper {
+        position: absolute;
+        top: 120%;
+        width: 100%;
+        background-color: #fff;
+        z-index: 999;
+        border: 0.5px solid lightgray;
+        transition: all 0.4s;
+        border-radius: 8px;
+        overflow: hidden;
+        opacity: 0;
+        max-height: 0;
+        order: 1;
+
+        & .search-bar {
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+
+            &__input {
+                width: 100%;
+            }
+        }
+
+        &.active {
+            max-height: 240px;
+            opacity: 1;
+            overflow-y: scroll;
+        }
+
+        &::-webkit-scrollbar {
+            width: 8px;
+            background: #e2e2e2;
+            border-radius: 0 8px 8px 0;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #6c6c6d;
+            border-radius: 0 8px 8px 0;
+        }
+    }
+
+    & .option {
+        padding: 12px 24px;
+        cursor: pointer;
+
+        &:hover {
+            background: #c8c9ca48;
+        }
+
+        & .radio {
+            display: none;
+        }
+
+        &__not-found {
+            color: #6c6c6d;
+            padding: 12px 24px;
+            text-align: center;
+        }
+
+        & label {
+            cursor: pointer;
+        }
+    }
+}
+
+/* ---------- Select Box CSS ----------- */
