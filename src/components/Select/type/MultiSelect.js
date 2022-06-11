@@ -1,36 +1,27 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Search } from '../../../utils/helpers';
 import PropTypes from 'prop-types';
 
-const MultiSelect = ({ isSearchable = false, options, ...props }) => {
+const MultiSelect = ({ isSearchable = false, onChange, options, ...props }) => {
     const [loadOption, setLoadOption] = useState(options);
     const [selectedValue, setSelectedValue] = useState([]);
-    const selectedOption = useRef(null);
+    const [toggleModal, setToggleModal] = useState(false);
     const inputSearch = useRef(null);
-    const optionBox = useRef(null);
 
     const handleSearch = (e) => {
-        // keep the option box active when client find the option
-        optionBox.current.parentNode.classList.add('overlay');
-        optionBox.current.classList.add('active');
-
         // search option on value changed
+        setToggleModal(true);
         const result = Search(e.target.value, options);
 
         setLoadOption(result);
     };
 
     const openOption = () => {
-        optionBox.current.parentNode.classList.toggle('overlay');
-        optionBox.current.classList.toggle('active');
+        setToggleModal(!toggleModal);
         inputSearch.current.focus();
     };
 
     const removeOption = (val) => {
-        // avoid toggle from open option function and smoothly close
-        optionBox.current.parentNode.classList.toggle('overlay');
-        optionBox.current.classList.toggle('active');
-
         if (val == 'All') {
             setSelectedValue([]);
         } else {
@@ -39,27 +30,29 @@ const MultiSelect = ({ isSearchable = false, options, ...props }) => {
     };
 
     const handleValue = (index) => {
-        setSelectedValue((prev) => (
-            [
-                ...prev,
-                {
-                    label: loadOption[index].label,
-                    value: loadOption[index].value
-                }
-            ]
-        ));
+        setSelectedValue([
+            ...selectedValue,
+            {
+                label: loadOption[index].label,
+                value: loadOption[index].value
+            }
+        ]);
 
         // reset searching
         inputSearch.current.value = '';
         setLoadOption(options);
-
-        return props.onChange(selectedValue); // --> send the value to client
     };
 
+    useEffect(() => {
+        if (selectedValue.length !== 0) {
+            return onChange(selectedValue); // --> send the value to client
+        }
+    }, [selectedValue]);
+
     return (
-        <div className='select-box multi' onClick={openOption}>
+        <div className={`select-box multi${toggleModal ? ' overlay' : ''}`} onClick={openOption}>
             <div className='option-selected'>
-                <div className='option-selected__group' ref={selectedOption}>
+                <div className='option-selected__group'>
                     {
                         selectedValue.length !== 0 &&
                             selectedValue.map((v, index) => (
@@ -77,7 +70,11 @@ const MultiSelect = ({ isSearchable = false, options, ...props }) => {
                                 </div>
                             ))
                     }
-                    <input className={`select-box__search ${isSearchable && 'disabled'}`} onChange={handleSearch} ref={inputSearch}/>
+                    <input
+                        className={`select-box__search${selectedValue.length == 0 ? ' withPlaceholder' : ''}`}
+                        onChange={handleSearch}
+                        ref={inputSearch}
+                        {...props}/>
                 </div>
                 {
                     selectedValue.length !== 0 &&
@@ -103,7 +100,7 @@ const MultiSelect = ({ isSearchable = false, options, ...props }) => {
                 </svg>
             </div>
             <div className='options-container'>
-                <div className='options-wrapper' ref={optionBox}>
+                <div className={`options-wrapper${toggleModal ? ' active' : ''}`}>
                     {
                         loadOption.length !== 0
                             ? loadOption.map((option, index) => (
@@ -115,7 +112,7 @@ const MultiSelect = ({ isSearchable = false, options, ...props }) => {
                                     <label>{option.label}</label>
                                 </div>
                             ))
-                            : <div className='option__not-found' disabled={true}>
+                            : <div className='option__not-found'>
                                 <label>result not found.</label>
                             </div>
                     }

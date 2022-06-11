@@ -10,6 +10,16 @@
         border: none;
         outline: none;
         font-size: inherit;
+
+        &::placeholder {
+            opacity: 0;
+        }
+
+        &.withPlaceholder {
+            &::placeholder {
+                opacity: 1;
+            }
+        }
     }
 
     &.single {

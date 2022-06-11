@@ -8,7 +8,8 @@
     width: 100%;
     height: 100%;
     background: transparent;
-    z-index: 2;
+    z-index: 1;
+    cursor: default;
 }
 
 .options-container {
@@ -20,12 +21,12 @@
         top: 120%;
         width: 100%;
         background-color: #fff;
-        z-index: 999;
+        z-index: 2;
         border: 0.5px solid lightgray;
         transition: all 0.4s;
         border-radius: 8px;
         overflow: hidden;
-        opacity: 0;
+        visibility: hidden;
         max-height: 0;
         order: 1;
 
@@ -42,7 +43,7 @@
 
         &.active {
             max-height: 240px;
-            opacity: 1;
+            visibility: visible;
             overflow-y: scroll;
         }
 
@@ -56,28 +57,28 @@
             background: #6c6c6d;
             border-radius: 0 8px 8px 0;
         }
-    }
 
-    & .option {
-        padding: 12px 24px;
-        cursor: pointer;
-
-        &:hover {
-            background: #c8c9ca48;
-        }
-
-        & .radio {
-            display: none;
-        }
-
-        &__not-found {
-            color: #6c6c6d;
+        & .option {
             padding: 12px 24px;
-            text-align: center;
-        }
-
-        & label {
             cursor: pointer;
+
+            &:hover {
+                background: #c8c9ca48;
+            }
+
+            & .radio {
+                display: none;
+            }
+
+            &__not-found {
+                color: #6c6c6d;
+                padding: 12px 24px;
+                text-align: center;
+            }
+
+            & label {
+                cursor: pointer;
+            }
         }
     }
 }

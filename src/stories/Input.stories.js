@@ -15,14 +15,16 @@ stories.add('App', () => {
         <div>
             <div style={{ display: 'flex', gap: '15px' }}>
                 <Input
-                    title='Your phone number :'
-                    placeholder='Enter the number'
-                    type='phone'
-                    onChange={(e) => console.log(e)}/>
-                <Input
                     title='Partners phone number :'
                     placeholder='Enter the number'
-                    type='phone'
+                    type='phone-input'
+                    name='phone-nummber'
+                    onChange={(e) => console.log(e)}/>
+                <Input
+                    title='Your phone number :'
+                    placeholder='Enter the number'
+                    type='phone-input'
+                    name='phone-nummber'
                     onChange={(e) => console.log(e)}/>
                 <Input title='First Name :' placeholder='Enter your first name' onChange={(e) => console.log(e)}/>
             </div>
@@ -41,18 +43,18 @@ stories.add('App', () => {
                     onChange={(e) => console.log(e)}
                     placeholder='Choose an option'
                     options={options} />
+            </div>
+            <div style={{ display: 'flex', gap: '15px' }}>
                 <Select
                     title='Multi select box :'
                     type='multi-select'
                     onChange={(e) => console.log(e)}
                     placeholder='Choose an option'
                     options={options} />
-            </div>
-            <div style={{ display: 'flex', gap: '15px' }}>
                 <Select
                     title='Country select box :'
                     type='country-select'
-                    onChange={(e) => console.log(e)}
+                    onChange={(e) => console.log('country', e)}
                     placeholder='Choose a country'/>
             </div>
         </div>

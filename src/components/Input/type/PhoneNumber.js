@@ -5,27 +5,24 @@ import PropTypes from 'prop-types';
 
 const InputNumber = ({ onChange, ...props }) => {
     const [countries, setCountries] = useState(country);
-    const [phone, setPhone] = useState(null);
-    const optionBox = useRef(null);
-    const selectedOption = useRef(null);
-    const searchOption = useRef(null);
-
-    const numberInput = useRef(null);
+    const [toggleModal, setToggleModal] = useState(false);
+    const [phone, setPhone] = useState({
+        countryCode: null,
+        number: null
+    });
+    const searchOption = useRef();
 
     const openOpt = () => {
-        selectedOption.current.classList.toggle('overlay');
-        optionBox.current.classList.toggle('active');
+        setToggleModal(!toggleModal);
         searchOption.current.focus();
     };
 
     const handleValue = (index) => {
         // set the value for the selected option
-        selectedOption.current.innerHTML = countries[index].dial_code;
+        setPhone({ ...phone, countryCode: countries[index].dial_code });
 
         // remove option and focusing to the next input
-        selectedOption.current.classList.remove('overlay');
-        optionBox.current.classList.remove('active');
-        numberInput.current.focus();
+        setToggleModal(!toggleModal);
 
         // reset searching
         searchOption.current.value = '';
@@ -44,13 +41,15 @@ const InputNumber = ({ onChange, ...props }) => {
 
             return null; // --> returning null response when client write other than numbers
         } else {
-            setPhone(e.target.value);
-            const countryCode = selectedOption.current.innerHTML;
+            setPhone({
+                ...phone,
+                number: e.target.value
+            });
 
             // send the value to client
             return onChange({
-                name: e.target.name,
-                value: countryCode + phone
+                name: props.name,
+                value: phone.countryCode + ' ' + phone.number
             });
         }
     };
@@ -58,7 +57,7 @@ const InputNumber = ({ onChange, ...props }) => {
     return (
         <div className='input-phone'>
             <div className='options-container'>
-                <div className='options-wrapper' ref={optionBox}>
+                <div className={`options-wrapper${toggleModal ? ' active' : ''}`}>
                     <div className='search-bar'>
                         <input
                             className='search-bar__input'
@@ -82,24 +81,24 @@ const InputNumber = ({ onChange, ...props }) => {
                             </div>
                     }
                 </div>
+                <div className={`selected${toggleModal ? ' overlay' : ''}`} onClick={openOpt}>{phone.countryCode !== null ? phone.countryCode : 'Country'}</div>
             </div>
-            <div className='selected' onClick={openOpt} ref={selectedOption}>Country</div>
             <input
                 className='input-phone__input'
                 onChange={handleNumber}
-                name='number-phone'
-                {...props}
-                ref={numberInput}/>
+                {...props}/>
         </div>
     );
 };
 
 InputNumber.propTypes = {
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    name: PropTypes.string
 };
 
 InputNumber.defaultProps = {
-    onChange: undefined
+    onChange: undefined,
+    name: undefined
 };
 
 export default InputNumber;

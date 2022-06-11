@@ -2,10 +2,10 @@ import React, { useRef, useState } from 'react';
 import { Search } from '../../../utils/helpers';
 import PropTypes from 'prop-types';
 
-const SingleSelect = ({ isSearchable = false, options, ...props }) => {
+const SingleSelect = ({ isSearchable = false, options, onChange, ...props }) => {
+    const selectedValue = useRef(null);
     const [loadOption, setLoadOption] = useState(options);
-    const selectedOption = useRef(null);
-    const selectBox = useRef(null);
+    const [toggleModal, setToggleModal] = useState(false);
 
     const handleChange = (e) => {
         const result = Search(e.target.value, options);
@@ -14,30 +14,26 @@ const SingleSelect = ({ isSearchable = false, options, ...props }) => {
     };
 
     const openOption = () => {
-        selectBox.current.parentNode.classList.toggle('overlay');
-        selectBox.current.classList.toggle('active');
+        setToggleModal(!toggleModal);
     };
 
     const postValue = (index) => {
-        // set the value selected
-        const groupOption = {
-            label: loadOption[index].label,
-            value: loadOption[index].value
-        };
-
-        selectedOption.current.value = groupOption.label;
+        selectedValue.current.value = loadOption[index].label;
 
         // reset searching
         setLoadOption(options);
 
         // send value to the client
-        return props.onChange(groupOption);
+        return onChange({
+            label: loadOption[index].label,
+            value: loadOption[index].value
+        });
     };
 
     return (
-        <div className='select-box single' onClick={openOption}>
+        <div className={`select-box single${toggleModal ? ' overlay' : ''}`} onClick={openOption}>
             <div className='options-container'>
-                <div className='options-wrapper' ref={selectBox}>
+                <div className={`options-wrapper${toggleModal ? ' active' : ''}`}>
                     {
                         loadOption.length !== 0
                             ? loadOption.map((option, index) => (
@@ -56,11 +52,11 @@ const SingleSelect = ({ isSearchable = false, options, ...props }) => {
                 </div>
             </div>
             <input
-                ref={selectedOption}
+                ref={selectedValue}
                 className='select-box__input disabled'
                 onChange={handleChange}
                 disabled={!isSearchable}
-                placeholder={props.placeholder} />
+                {...props} />
             <svg
                 height='20'
                 width='20'
@@ -77,15 +73,13 @@ const SingleSelect = ({ isSearchable = false, options, ...props }) => {
 SingleSelect.propTypes = {
     isSearchable: PropTypes.bool,
     onChange: PropTypes.func,
-    options: PropTypes.array,
-    placeholder: PropTypes.string
+    options: PropTypes.array
 };
 
 SingleSelect.defaultProps = {
     isSearchable: undefined,
     onChange: undefined,
-    options: [],
-    placeholder: undefined
+    options: []
 };
 
 export default SingleSelect;
