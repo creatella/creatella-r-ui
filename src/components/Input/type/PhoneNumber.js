@@ -1,20 +1,22 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import country from '../../../utils/country.json';
 import { Search } from '../../../utils/helpers';
 import PropTypes from 'prop-types';
 
 const InputNumber = ({ onChange, ...props }) => {
-    const [countries, setCountries] = useState(country);
+    const [searchValue, setSearchValue] = useState('');
     const [toggleModal, setToggleModal] = useState(false);
     const [phone, setPhone] = useState({
         countryCode: null,
         number: null
     });
-    const searchOption = useRef();
+
+    // handling options
+    const countries = Search(searchValue, country);
 
     const openOpt = () => {
         setToggleModal(!toggleModal);
-        searchOption.current.focus();
+        // searchOption.current.focus();
     };
 
     const handleValue = (index) => {
@@ -25,14 +27,7 @@ const InputNumber = ({ onChange, ...props }) => {
         setToggleModal(!toggleModal);
 
         // reset searching
-        searchOption.current.value = '';
-        setCountries(country);
-    };
-
-    const handleSearch = (e) => {
-        const result = Search(e.target.value, country);
-
-        setCountries(result);
+        setSearchValue('');
     };
 
     const handleNumber = (e) => {
@@ -62,8 +57,8 @@ const InputNumber = ({ onChange, ...props }) => {
                         <input
                             className='search-bar__input'
                             placeholder='Search Country'
-                            ref={searchOption}
-                            onChange={handleSearch}/>
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}/>
                     </div>
                     {
                         countries.length !== 0

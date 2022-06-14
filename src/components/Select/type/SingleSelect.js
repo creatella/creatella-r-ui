@@ -4,24 +4,18 @@ import PropTypes from 'prop-types';
 
 const SingleSelect = ({ isSearchable = false, options, onChange, ...props }) => {
     const selectedValue = useRef(null);
-    const [loadOption, setLoadOption] = useState(options);
     const [toggleModal, setToggleModal] = useState(false);
+    const [searchValue, setSearchValue] = useState('');
 
-    const handleChange = (e) => {
-        const result = Search(e.target.value, options);
-
-        setLoadOption(result);
-    };
+    // handling option
+    const loadOption = Search(searchValue, options);
 
     const openOption = () => {
         setToggleModal(!toggleModal);
     };
 
     const postValue = (index) => {
-        selectedValue.current.value = loadOption[index].label;
-
-        // reset searching
-        setLoadOption(options);
+        setSearchValue('');
 
         // send value to the client
         return onChange({
@@ -54,7 +48,9 @@ const SingleSelect = ({ isSearchable = false, options, onChange, ...props }) => 
             <input
                 ref={selectedValue}
                 className='select-box__input disabled'
-                onChange={handleChange}
+                onChange={(e) => setSearchValue(e.target.value)}
+                value={searchValue}
+                placeholder={searchValue !== '' && searchValue}
                 disabled={!isSearchable}
                 {...props} />
             <svg

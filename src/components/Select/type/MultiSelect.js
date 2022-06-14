@@ -3,17 +3,18 @@ import { Search } from '../../../utils/helpers';
 import PropTypes from 'prop-types';
 
 const MultiSelect = ({ isSearchable = false, onChange, options, ...props }) => {
-    const [loadOption, setLoadOption] = useState(options);
+    const [searchValue, setSearchValue] = useState('');
     const [selectedValue, setSelectedValue] = useState([]);
     const [toggleModal, setToggleModal] = useState(false);
-    const inputSearch = useRef(null);
+    const inputSearch = useRef();
+
+    // handling options
+    const loadOption = Search(searchValue, options);
 
     const handleSearch = (e) => {
         // search option on value changed
         setToggleModal(true);
-        const result = Search(e.target.value, options);
-
-        setLoadOption(result);
+        setSearchValue(e.target.value);
     };
 
     const openOption = () => {
@@ -39,8 +40,7 @@ const MultiSelect = ({ isSearchable = false, onChange, options, ...props }) => {
         ]);
 
         // reset searching
-        inputSearch.current.value = '';
-        setLoadOption(options);
+        setSearchValue('');
     };
 
     useEffect(() => {
@@ -74,6 +74,7 @@ const MultiSelect = ({ isSearchable = false, onChange, options, ...props }) => {
                         className={`select-box__search${selectedValue.length == 0 ? ' withPlaceholder' : ''}`}
                         onChange={handleSearch}
                         ref={inputSearch}
+                        value={searchValue}
                         {...props}/>
                 </div>
                 {
